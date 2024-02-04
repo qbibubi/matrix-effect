@@ -9,8 +9,8 @@
 #define MIN_RANGE 16
 #define MAX_RANGE 32
 
-#define MAX_WIDTH 109
-#define MAX_HEIGHT 102
+#define MAX_WIDTH 10
+#define MAX_HEIGHT 10
 
 typedef struct {
   unsigned width;
@@ -18,28 +18,32 @@ typedef struct {
   char **matrix;
 } Screen;
 
-typedef struct {
-  unsigned length;
-  char *line;
-} Line;
+// typedef struct {
+//   unsigned length;
+//   char *line;
+// } Line;
 
 char **generate_screen(const unsigned width, const unsigned height);
+char **populate_screen(Screen *screen);
 char *generate_line();
 char generate_char();
+// void draw_line(Line *line, Screen *screen);
 
-// draws a line on the screen
-void draw_line(Line *line, Screen *screen);
-
+void print_screen(Screen *screen);
 /*
  * MAIN
  */
 int main(int argc, char *argv[]) {
   srand((unsigned int)time(NULL));
-  char **screen = generate_screen(MAX_WIDTH, MAX_HEIGHT);
 
-  while (1) {
-    // print the matrix effect
-  }
+  char **matrix = generate_screen(MAX_WIDTH, MAX_HEIGHT);
+  Screen screen = {MAX_WIDTH, MAX_HEIGHT, matrix};
+
+  // while (1) {
+  print_screen(&screen);
+  // }
+
+  free(screen.matrix);
 
   return 0;
 }
@@ -48,13 +52,26 @@ int main(int argc, char *argv[]) {
  * DEFINITIONS
  */
 char **generate_screen(const unsigned width, const unsigned height) {
-  char **screen = (char **)malloc(width * sizeof(char));
+  char **screen = (char **)malloc(width * sizeof(char *));
 
   for (unsigned i = 0; i < width; ++i) {
     screen[i] = (char *)malloc(height * sizeof(char));
+
+    for (unsigned j = 0; j < height; ++j) {
+      screen[i][j] = '#';
+    }
   }
 
   return screen;
+}
+
+void print_screen(Screen *screen) {
+  for (unsigned i = 0; i < screen->width; ++i) {
+    for (unsigned j = 0; j < screen->height; ++j) {
+      printf("%c", screen->matrix[i][j]);
+    }
+    printf("\n");
+  }
 }
 
 char generate_char() {
@@ -76,4 +93,4 @@ char *generate_line() {
   return line;
 }
 
-void draw_line(Line *line, Screen *screen) {}
+// void draw_line(Line *line, Screen *screen) {}
