@@ -1,10 +1,11 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <time.h>
+#include <unistd.h>
 
 #define MIN_RANGE 8
 #define MAX_RANGE 32
-#define MAX_HEIGHT 25
+#define MAX_HEIGHT 45
 #define MAX_WIDTH 85
 
 typedef struct {
@@ -26,7 +27,7 @@ void print_screen(Screen *screen);
 
 // lines
 Line generate_line();
-void draw_line(Line *line, Screen *screen);
+Line *generate_lines();
 char generate_char();
 
 /*
@@ -41,10 +42,14 @@ int main(int argc, char *argv[]) {
   screen.height = MAX_HEIGHT;
   screen.matrix = matrix;
 
-  // while (1) {
-  update_screen(&screen);
-  print_screen(&screen);
-  // }
+  Line *lines = (Line *)malloc(MAX_WIDTH * sizeof(Line));
+
+  while (1) {
+    printf("\033[H\033[J"); // temporary screen refresh
+    update_screen(&screen);
+    print_screen(&screen);
+    sleep(1);
+  }
 
   free(screen.matrix);
 
@@ -114,4 +119,11 @@ Line generate_line() {
   return line;
 }
 
-// void draw_line(Line *line, Screen *screen) {}
+Line *generate_lines() {
+  Line *lines = (Line *)malloc(MAX_WIDTH * sizeof(Line));
+  for (unsigned i = 0; i < MAX_WIDTH; ++i) {
+    lines[i] = generate_line();
+  }
+
+  return lines;
+}
